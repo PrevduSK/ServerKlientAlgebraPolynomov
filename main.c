@@ -43,19 +43,22 @@ int main(int argc, char **argv) {
                         printf("Scitanie polynomov\n =");
                         pomPoly= scitajPolynomi(&poly[0],&poly[1]);
                         vypisPolynom(&pomPoly, citac);
+                    printf("%s\n",citac);
                         break;
                     // odcitaj polynomy
                 case 2:
                         printf("Odcitanie polynomov\n =");
                         pomPoly= odcitajPolynomi(&poly[0],&poly[1]);
                         vypisPolynom(&pomPoly, citac);
-                        break;
+                    printf("%s\n",citac);
+                    break;
                     // nasob polynomy
                 case 3:
                         printf("Nasobenie polynomov\n =");
                         pomPoly= nasobPolynomi(&poly[0],&poly[1]);
                         vypisPolynom(&pomPoly, citac);
-                        break;
+                        printf("%s\n",citac);
+                    break;
                     // del polynomy
                 case 4: 
                         printf("Delenie polynomov\n =");
@@ -67,7 +70,8 @@ int main(int argc, char **argv) {
                         printf("Zvisok po deleni polynomov\n =");
                         pomPoly= zvisokDelPolynomi(&poly[0],&poly[1]);
                         vypisPolynom(&pomPoly, citac);
-                        break;
+                    printf("%s\n",citac);
+                    break;
                     // koniec programu
                 case 6: 
                         vymazPolynom(&poly[0]);
