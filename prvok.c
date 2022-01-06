@@ -22,7 +22,7 @@ PRVOK scitajPrvky(PRVOK * pr1, PRVOK * pr2) {
         pr3.cislo = scitajZlomky(&pr1->cislo,&pr2->cislo);
         pr3.nasobnost = pr1->nasobnost;
     }else if(porovnajNasobPrvkov(pr1,pr2) > 0 && porovnajNasobPrvkov(pr1,pr2) < NASOB_PRVKU) {pr3= *pr1;}
-    if(porovnajNasobPrvkov(pr1,pr2) < 0 && porovnajNasobPrvkov(pr1,pr2) > -NASOB_PRVKU) {pr3= *pr2;} //
+    else if(porovnajNasobPrvkov(pr1,pr2) < 0 && porovnajNasobPrvkov(pr1,pr2) > -NASOB_PRVKU) {pr3= *pr2;} //
     return pr3;
 }
 
@@ -32,7 +32,7 @@ PRVOK odcitajPrvky(PRVOK * pr1, PRVOK * pr2) {
         pr3.cislo = odcitajZlomky(&pr1->cislo,&pr2->cislo);
         pr3.nasobnost = pr1->nasobnost;
     }else if(porovnajNasobPrvkov(pr1,pr2) > 0 && porovnajNasobPrvkov(pr1,pr2) < NASOB_PRVKU) {pr3= *pr1;}
-    if(porovnajNasobPrvkov(pr1,pr2) < 0 && porovnajNasobPrvkov(pr1,pr2) > -NASOB_PRVKU) {pr3= *pr2;} //
+    else if(porovnajNasobPrvkov(pr1,pr2) < 0 && porovnajNasobPrvkov(pr1,pr2) > -NASOB_PRVKU) {pr3= *pr2;} //
     return pr3;
 }
 // nasobz prvky polynomu
