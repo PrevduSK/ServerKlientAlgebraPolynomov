@@ -134,14 +134,18 @@ void * komunikacia(void * data) {
     pthread_mutex_unlock(kd->mutex);
 
     do {
+        pthread_mutex_lock(kd->mutex);
+        *kd->koniec = 1;
+        pthread_mutex_unlock(kd->mutex);
+
         printf("Caka na zadanie hodnot.\n");
         i = 0;
         bzero(buffer, 64);
-        do { // server nacita polynomi
+        while (i < 2) { // server nacita polynomi
             n = (int) read(newsockfd, buffer, 63);
             if (n < 0) {
                 perror("Error reading from socket");
-                return 4;
+                break;// return 4;
             } else if (n > 0) {
                 printf("Server prial %s \n", buffer);
                 pthread_mutex_lock(kd->mutex);
@@ -153,18 +157,11 @@ void * komunikacia(void * data) {
                 ++i;
             }
             bzero(buffer, 64);
-        } while (i < 2);
+        }
 
-      /*  i = 0;
-        while (i<2){
-            bzero(buffer, 64);
-            vypisPolynom(kd->polyD[i], buffer); // &poly[i]
-            printf("Bol priaty tento %d. %s \n", i+1, buffer);
-            ++i;
-        } */
         // ----------------------------------------------------------------------------------
         i = 0;
-        do { // server posle ako kotrolu polynomi
+        while (i < 2) { // server posle ako kotrolu polynomi
             printf("Poslanie polynomu klintovy.\n");
             bzero(buffer, 64);
             pthread_mutex_lock(kd->mutex);
@@ -174,21 +171,21 @@ void * komunikacia(void * data) {
             n = (int) write(newsockfd, buffer, strlen(buffer));
             if (n < 0) {
                 perror("Error writing to socket");
-                return 5;
+                break; // return 5;
             }
             if (n > 0) {
                 printf("%d. %s \n", i + 1, buffer);
                 ++i; }
             usleep(50);
-        } while (i < 2);
+        }
 
         do{ // server nacita prikaz
            // printf("Zadanie prikzu na vykonavanie operacie.\n");
             bzero(buffer, 64);
             n = (int) read(newsockfd, buffer, 63);
             if (n < 0) {
-                perror("Error writing to socket");
-                return 5;
+                perror("Error reading from socket");
+                break; // return 4;
             }
             ukaz = strchr(buffer, '\0');
             --ukaz;
@@ -217,7 +214,7 @@ void * komunikacia(void * data) {
                         if (n < 0)
                         {
                             perror("Error writing to socket");
-                            return 5;
+                            break; // return 5;
                         }
                 }
             }
@@ -225,17 +222,20 @@ void * komunikacia(void * data) {
 
         } while (*kd->koniec == 1);
         i = 0;
-        do {
+        while (i < 3) {
             pthread_mutex_lock(kd->mutex);
             vymazPolynom(kd->polyD[i]);
             pthread_mutex_unlock(kd->mutex);
             ++i;
-        } while (i < 3);
+        }
     } while (*kd->koniec > 1);
 
     // ukoncenie spojenia so soketom kienta
     close(newsockfd);
-    sleep(10);
+    pthread_mutex_lock(kd->mutex);
+    *kd->koniec = -1;
+    pthread_mutex_unlock(kd->mutex);
+    sleep(4);
     // ukonceie soketu servra
     // close(sockfd);
     return NULL;
@@ -296,6 +296,7 @@ void * pocitanie(void * data){
                 case 6:
                     pthread_mutex_lock(kd->mutex);
                     *kd->koniec = 0;
+                    kd->progKod = 0;
                     pthread_mutex_unlock(kd->mutex);
                     printf("\n__________________koniec___________________\n");
                     break;
@@ -303,15 +304,19 @@ void * pocitanie(void * data){
                 case 7:
                     pthread_mutex_lock(kd->mutex);
                     *kd->koniec = 2;
+                    kd->progKod = 0;
                     pthread_mutex_unlock(kd->mutex);
                     printf("\n___________________________________\nZadajte nove hodnoty\n");
                     break;
                 default:
                     printf("Zadanu moznost nieje mozne vykonat.\n");
+                    pthread_mutex_lock(kd->mutex);
+                    kd->progKod = 0;
+                    pthread_mutex_unlock(kd->mutex);
                     break;
             }
         }
-        if(*kd->koniec == 0 || *kd->koniec == 2) {break;}
+        if(*kd->koniec == -1) {break;}
     }
     return NULL;
 }
@@ -349,5 +354,6 @@ int main(int argc, char *argv[])
     } */
 
     vytvor_servra(&sd, false);
+    printf("Koniec spojenia. %d\n",newsockfd_m);
     return 0;
 }

@@ -67,18 +67,17 @@ int main(int argc, char *argv[])
     }
 
 
-        // komunikacia so serverom
+        // -------------------- komunikacia so serverom-------------------------------------------
     printf("Please enter a message: ");
     // bzero(buffer,256);
    // fgets(buffer, 255, stdin);
-
-
-    koniec= 1;
+    int i;
     printf("-- Zadajte polynom so zlomkom (v tvare: npr.: 3/4x^2+1/2x...) a stlacte enter\n-- poznamka: Vsetky cisla su zapisuju v tvare zlomku aj cele cisle npr.: 4 zapiste ako 4/1\n");
     do {
-        int i = 0;
+        koniec= 1;
+        i = 0;
         bzero(buffer, 64);
-        do { // klient posiela polynomi
+        while (i < 2) { // klient posiela polynomi
             printf("\t----Zadajte %d. polynom----\n", (i + 1));
             //fgets(buffer, 63, stdin);
             scanf("%s", buffer);
@@ -88,12 +87,12 @@ int main(int argc, char *argv[])
                 return 5;
             } else if (n > 0) { ++i; }
             bzero(buffer, 64);
-        } while (i < 2);
+        }
 
         printf("\n---------------------------------------\n");
 
         i = 0;
-        do { // klient nacita polynomi
+        while (i < 2) { // klient nacita polynomi
             bzero(buffer, 64);
             n = (int) read(sockfd, buffer, 63);
             if (n < 0) {
@@ -103,7 +102,7 @@ int main(int argc, char *argv[])
                 printf("%d. %s \n", i + 1, buffer);
                 ++i;
             }
-        } while (i < 2);
+        }
 
         do{ // klient posle prikaz
             printf("\t----Zadajte moznost pre vykonanie operacie s polynomami----\n -- 1:Scitanie polynomov\n -- 2:Odcitanie polynomov\n -- 3:Nasobenie polynomov\n -- 4:Delenie polynomov\n"
@@ -136,10 +135,11 @@ int main(int argc, char *argv[])
             bzero(buffer,64);
 
         } while (koniec == 1);
+        usleep(500);
     } while (koniec > 1);
 
 
-    sleep(10);
+    sleep(4);
     printf("Koniec spojenia. %s\n",buffer);
     close(sockfd);
 
