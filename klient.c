@@ -21,51 +21,10 @@
 #include <string.h>
 #include <unistd.h>
 
-int main(int argc, char *argv[])
-{
-    int sockfd, n, koniec, cis;
-        // inicializacia adresy ku ktorej sa chce pripojit
-    struct sockaddr_in serv_addr;
-    struct hostent* server;
+int prepojenieZoserv(char * buffer, int sockfd) {
+    int n, koniec, cis;
+    char * ukaz;
 
-    char buffer[64], zber, * ukaz;
-
-    if (argc < 3)
-    {
-        fprintf(stderr,"usage %s hostname port\n", argv[0]);
-        return 1;
-    }
-        // funkcia vrati info o hostitelskom pc na zaklade jeho mena
-    server = gethostbyname(argv[1]);
-    if (server == NULL)
-    {
-        fprintf(stderr, "Error, no such host\n");
-        return 2;
-    }
-
-    bzero((char*)&serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy(
-            (char*)server->h_addr,
-            (char*)&serv_addr.sin_addr.s_addr,
-            server->h_length
-    );  // htons() funkcia skonvertuje 16-bit cele cislo z reprezentacie pc, na sietovu
-    serv_addr.sin_port = htons(atoi(argv[2]));
-        // vytvorenie socketu
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd < 0)
-    {
-        perror("Error creating socket");
-        return 3;
-    }
-        // poziadane o spojenie so serverom
-    if(connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
-    {
-        perror("Error connecting to socket");
-        return 4;
-    }
-
-        // -------------------- komunikacia so serverom-------------------------------------------
     printf("Please enter a message: ");
     int i;
     printf("-- Zadajte polynom so zlomkom (v tvare: npr.: 3/4x^2+1/2x...) a stlacte enter\n-- poznamka: Vsetky cisla su zapisuju v tvare zlomku aj cele cisle npr.: 4 zapiste ako 4/1\n");
@@ -133,6 +92,77 @@ int main(int argc, char *argv[])
         } while (koniec == 1);
         usleep(500);
     } while (koniec > 1);
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    int sockfd, n; // n, koniec, cis
+        // inicializacia adresy ku ktorej sa chce pripojit
+    struct sockaddr_in serv_addr;
+    struct hostent* server;
+
+    char buffer[64]; // , zber, * ukaz
+
+    if (argc < 3)
+    {
+        fprintf(stderr,"usage %s hostname port\n", argv[0]);
+        return 1;
+    }
+        // funkcia vrati info o hostitelskom pc na zaklade jeho mena
+    server = gethostbyname(argv[1]);
+    if (server == NULL)
+    {
+        fprintf(stderr, "Error, no such host\n");
+        return 2;
+    }
+
+    bzero((char*)&serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    bcopy(
+            (char*)server->h_addr,
+            (char*)&serv_addr.sin_addr.s_addr,
+            server->h_length
+    );  // htons() funkcia skonvertuje 16-bit cele cislo z reprezentacie pc, na sietovu
+    serv_addr.sin_port = htons(atoi(argv[2]));
+        // vytvorenie socketu
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0)
+    {
+        perror("Error creating socket");
+        return 3;
+    }
+        // poziadane o spojenie so serverom
+    if(connect(sockfd, (struct sockaddr*)&serv_addr, sizeof(serv_addr)) < 0)
+    {
+        perror("Error connecting to socket");
+        return 4;
+    }
+
+        // -------------------- komunikacia so serverom-------------------------------------------
+   // prepojenieZoserv(buffer, sockfd);
+    n = (int) read(sockfd, buffer, 63);
+    if (n < 0) {
+        perror("Error reading from socket");
+        return 6;
+    }
+    printf("klient prial: %s \n", buffer);
+
+    srand(time(NULL));
+    int nahod;
+     nahod= (rand()%5 +2);
+
+
+    scanf("%s", buffer);
+    printf("caka %d s\n", nahod);
+    sleep(nahod);
+    //strcpy(buffer, "Ahoj ide to.\n");
+    n = (int) write(sockfd, buffer, strlen(buffer));
+    if (n < 0) {
+        perror("Error writing to socket");
+        return 5;
+    }
+
 
     sleep(4);
     printf("Koniec spojenia. %s\n",buffer);
