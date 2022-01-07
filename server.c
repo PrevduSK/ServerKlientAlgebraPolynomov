@@ -3,7 +3,6 @@
 //
 
 
-
 /* vyberie z pameti polynomi a socekt (pre informaciu)
  * zavolanim funkcii bude robit operacie s polynommi
  * ulozi do pameti vysledok polynomov a priradi mu povodny socket
@@ -32,7 +31,6 @@ typedef struct serData{
     char ***argvD;
     pthread_mutex_t *mutex;
 }SDT;
-
 
 // sockklient, progKod, *koniec, *mutex, *polyD[3]
 typedef struct komData{
@@ -126,7 +124,6 @@ void * komunikacia(void * data) {
     char  buffer[64], *ukaz;
 
     // komunikacia s klientom
-
     bzero(buffer, 64);
     int cis, i;
     pthread_mutex_lock(kd->mutex);
@@ -151,9 +148,6 @@ void * komunikacia(void * data) {
                 pthread_mutex_lock(kd->mutex);
                 pridajPolynom(kd->polyD[i], buffer);
                 pthread_mutex_unlock(kd->mutex);
-              /*  bzero(buffer, 64);
-                vypisPolynom(kd->polyD[i], buffer); // &poly[i]
-                printf("Bol priaty tento %d. %s \n", i+1, buffer); */
                 ++i;
             }
             bzero(buffer, 64);
@@ -210,12 +204,12 @@ void * komunikacia(void * data) {
                         pthread_mutex_unlock(kd->mutex);
                         printf("Vysleok polynomu %s \n", buffer);
                     }
-                        n = (int) write(newsockfd, buffer, strlen(buffer));
-                        if (n < 0)
-                        {
-                            perror("Error writing to socket");
-                            break; // return 5;
-                        }
+                    n = (int) write(newsockfd, buffer, strlen(buffer));
+                    if (n < 0)
+                    {
+                        perror("Error writing to socket");
+                        break; // return 5;
+                    }
                 }
             }
             bzero(buffer,64);
@@ -246,8 +240,7 @@ void * pocitanie(void * data){
     KDT* kd = data;
 
     char buffer[64];
-    int newsockfd, n;
-    //  int cis, konec, i;
+    // int newsockfd, n;
     while (true) {
         if (kd->progKod > 0  && kd->progKod < 8 ) {//
             bzero(buffer,64);
@@ -306,10 +299,10 @@ void * pocitanie(void * data){
                     *kd->koniec = 2;
                     kd->progKod = 0;
                     pthread_mutex_unlock(kd->mutex);
-                    printf("\n___________________________________\nZadajte nove hodnoty\n");
+                   // printf("\n___________________________________\nZadajte nove hodnoty\n");
                     break;
                 default:
-                    printf("Zadanu moznost nieje mozne vykonat.\n");
+                   // printf("Zadanu moznost nieje mozne vykonat.\n");
                     pthread_mutex_lock(kd->mutex);
                     kd->progKod = 0;
                     pthread_mutex_unlock(kd->mutex);
@@ -347,11 +340,6 @@ int main(int argc, char *argv[])
     pthread_join(konzument, NULL);
 
     pthread_mutex_destroy(&mutex);
-
-  /*  for (int i = 0; i < 3; ++i) {
-        vypisPolynom(&poly[i], vyp);
-        printf("%s \n", vyp);
-    } */
 
     vytvor_servra(&sd, false);
     printf("Koniec spojenia. %d\n",newsockfd_m);

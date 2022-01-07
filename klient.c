@@ -2,7 +2,6 @@
 // Created by HP on 24. 11. 2021.
 //
 
-
 /* klinetovy sa vypise aby zadal polynomi, po zadani polynomu si vyberie moznost co robit
  * klient zapisuje polinomi ktore sa ukladaju do pamete aj zo soketom
  * ked klietn zapisuje polynom do pameti tak k nemu nema pristup server
@@ -66,11 +65,8 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-
         // -------------------- komunikacia so serverom-------------------------------------------
     printf("Please enter a message: ");
-    // bzero(buffer,256);
-   // fgets(buffer, 255, stdin);
     int i;
     printf("-- Zadajte polynom so zlomkom (v tvare: npr.: 3/4x^2+1/2x...) a stlacte enter\n-- poznamka: Vsetky cisla su zapisuju v tvare zlomku aj cele cisle npr.: 4 zapiste ako 4/1\n");
     do {
@@ -137,7 +133,6 @@ int main(int argc, char *argv[])
         } while (koniec == 1);
         usleep(500);
     } while (koniec > 1);
-
 
     sleep(4);
     printf("Koniec spojenia. %s\n",buffer);
