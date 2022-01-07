@@ -260,9 +260,10 @@ POLYNOM delPolynomi(POLYNOM * p1, POLYNOM * p2) {
             p3.polePrvk[0].cislo.menovatel = 1;
             p3.polePrvk[0].nasobnost = 0;
             printf("Nieje mozne delit polynom x^%d polynomom x^%d\n", p1->polePrvk[0].nasobnost,p2->polePrvk[0].nasobnost);
-            char *buf;
-        vypisPolynom(&p3,buf);
-        printf("%s\n", buf);
+          //  char *buf;
+       // vypisPolynom(&p3,buf);
+      //  printf("%s\n", buf);
+        vymazPolynom(&p3);
     }
     return p3;
 }
@@ -349,9 +350,10 @@ POLYNOM zvisokDelPolynomi(POLYNOM * p1, POLYNOM * p2) {
         p5.polePrvk[0].cislo.menovatel = 0;
         p5.polePrvk[0].nasobnost = 0;
         printf("Nieje mozne vypocitat zvisok po deleni\n");
-        char *buf;
+     /*   char *buf;
         vypisPolynom(&p5,buf);
-        printf("%s\n", buf);
+        printf("%s\n", buf); */
+        vymazPolynom(&p5);
         }
     return p5;
 }

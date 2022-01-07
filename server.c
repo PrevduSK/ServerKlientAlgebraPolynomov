@@ -125,16 +125,16 @@ void * komunikacia(void * data) {
     int n, newsockfd;
     char  buffer[64], *ukaz;
 
-    //--------------------------------------------------------------------=======================
     // komunikacia s klientom
 
     bzero(buffer, 64);
     int cis, i;
-    do {
-        pthread_mutex_lock(kd->mutex);
-        newsockfd = kd->sockklient;
-        pthread_mutex_unlock(kd->mutex);
+    pthread_mutex_lock(kd->mutex);
+    newsockfd = kd->sockklient;
+    pthread_mutex_unlock(kd->mutex);
 
+    do {
+        printf("Caka na zadanie hodnot.\n");
         i = 0;
         bzero(buffer, 64);
         do { // server nacita polynomi
@@ -155,13 +155,13 @@ void * komunikacia(void * data) {
             bzero(buffer, 64);
         } while (i < 2);
 
-        i = 0;
+      /*  i = 0;
         while (i<2){
             bzero(buffer, 64);
             vypisPolynom(kd->polyD[i], buffer); // &poly[i]
             printf("Bol priaty tento %d. %s \n", i+1, buffer);
             ++i;
-        }
+        } */
         // ----------------------------------------------------------------------------------
         i = 0;
         do { // server posle ako kotrolu polynomi
@@ -176,14 +176,12 @@ void * komunikacia(void * data) {
                 perror("Error writing to socket");
                 return 5;
             }
-
             if (n > 0) {
                 printf("%d. %s \n", i + 1, buffer);
                 ++i; }
             usleep(50);
         } while (i < 2);
 
-        //sleep(10);
         do{ // server nacita prikaz
            // printf("Zadanie prikzu na vykonavanie operacie.\n");
             bzero(buffer, 64);
@@ -203,23 +201,27 @@ void * komunikacia(void * data) {
                 pthread_mutex_unlock(kd->mutex);
 
                 printf("premiesnene %d \n", kd->progKod);
-            }
 
-            sleep(2);
-            bzero(buffer,64);  // server posiela vyslekod
-            if(kd->polyD[2]->polePrvk[0].nasobnost > 0) {
-                pthread_mutex_lock(kd->mutex);
-                vypisPolynom(kd->polyD[2], buffer);
-                pthread_mutex_unlock(kd->mutex);
-                printf("Vysleok polynomu %s \n", buffer);
-
-                n = (int) write(newsockfd, buffer, strlen(buffer));
-                if (n < 0)
-                {
-                    perror("Error writing to socket");
-                    return 5;
+                sleep(2);
+                bzero(buffer,64);  // server posiela vyslekod
+                if(*kd->koniec == 1) {
+                    if(kd->polyD[2]->polePrvk[0].nasobnost == 0) {
+                        strcpy(buffer, " operacie nieje mozne vypocitat pre rovnost stupna polynomov!\0");
+                    } else {
+                        pthread_mutex_lock(kd->mutex);
+                        vypisPolynom(kd->polyD[2], buffer);
+                        pthread_mutex_unlock(kd->mutex);
+                        printf("Vysleok polynomu %s \n", buffer);
+                    }
+                        n = (int) write(newsockfd, buffer, strlen(buffer));
+                        if (n < 0)
+                        {
+                            perror("Error writing to socket");
+                            return 5;
+                        }
                 }
             }
+            bzero(buffer,64);
 
         } while (*kd->koniec == 1);
         i = 0;
@@ -292,7 +294,6 @@ void * pocitanie(void * data){
                     break;
                     // koniec programu
                 case 6:
-                    vymazPolynom(kd->polyD[0]); vymazPolynom(kd->polyD[1]); vymazPolynom(kd->polyD[2]);
                     pthread_mutex_lock(kd->mutex);
                     *kd->koniec = 0;
                     pthread_mutex_unlock(kd->mutex);
@@ -300,7 +301,6 @@ void * pocitanie(void * data){
                     break;
                     // zadanie znova hodnot
                 case 7:
-                    vymazPolynom(kd->polyD[0]); vymazPolynom(kd->polyD[1]); vymazPolynom(kd->polyD[2]);
                     pthread_mutex_lock(kd->mutex);
                     *kd->koniec = 2;
                     pthread_mutex_unlock(kd->mutex);
@@ -311,7 +311,7 @@ void * pocitanie(void * data){
                     break;
             }
         }
-        if(*kd->koniec == 0) {break;}
+        if(*kd->koniec == 0 || *kd->koniec == 2) {break;}
     }
     return NULL;
 }

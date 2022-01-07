@@ -80,7 +80,8 @@ int main(int argc, char *argv[])
         bzero(buffer, 64);
         do { // klient posiela polynomi
             printf("\t----Zadajte %d. polynom----\n", (i + 1));
-            fgets(buffer, 63, stdin);
+            //fgets(buffer, 63, stdin);
+            scanf("%s", buffer);
             n = (int) write(sockfd, buffer, strlen(buffer));
             if (n < 0) {
                 perror("Error writing to socket");
@@ -124,12 +125,15 @@ int main(int argc, char *argv[])
                 printf("Zadani prikaz %d \n", (int) strtol(buffer, &ukaz, 0));
 
                 bzero(buffer, 64); // klient nacita vysledok
-                n = (int) read(sockfd, buffer, 63);
-                if (n < 0) {
-                    perror("Error reading from socket");
-                    return 6;
-                } else if (n > 0) { printf("Vysledok %s \n", buffer); }
+                if(koniec == 1) {
+                    n = (int) read(sockfd, buffer, 63);
+                    if (n < 0) {
+                        perror("Error reading from socket");
+                        return 6;
+                    } else if (n > 0) { printf("Vysledok %s \n", buffer); }
+                }
             }
+            bzero(buffer,64);
 
         } while (koniec == 1);
     } while (koniec > 1);
