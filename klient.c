@@ -24,7 +24,7 @@
 
 int debataSoser(char * buffer, int sockfd) {
     int n, koniec, cis;
-    char * ukaz;
+    char * ukaz, *ukzK1;
 
     printf("Please enter a message: ");
     int i;
@@ -46,18 +46,34 @@ int debataSoser(char * buffer, int sockfd) {
         }
 
         printf("\n---------------------------------------\n");
-
+        //usleep(100);
         i = 0;
+        //read(sockfd, buffer, 63);
+        bzero(buffer, 64);
+       // read(sockfd, buffer, 63);
         while (i < 2) { // klient nacita polynomi
-            bzero(buffer, 64);
+
             n = (int) read(sockfd, buffer, 63);
             if (n < 0) {
                 perror("Error reading from socket");
                 return 6;
             } else if (n > 0) {
-                printf("%d. %s \n", i + 1, buffer);
-                ++i;
-            }
+                if ( strlen(buffer) < 2) {
+                    //printf("bol priaty prazdny buf %ld \n", strlen(buffer) );
+                    } else {
+                    printf("%d. %s \n", i + 1, buffer);
+                    ++i;
+                }
+            } else { printf("nebolo nacitaen nic"); }
+
+            bzero(buffer, 64);
+           strcpy(buffer,"ready");
+           n = (int) write(sockfd, buffer, strlen(buffer));
+           if (n < 0) {
+               perror("Error writing to socket");
+               return 5;
+           }
+            bzero(buffer, 64);
         }
 
         do{ // klient posle prikaz
@@ -81,6 +97,7 @@ int debataSoser(char * buffer, int sockfd) {
 
                 bzero(buffer, 64); // klient nacita vysledok
                 if(koniec == 1) {
+                    bzero(buffer, 64);
                     n = (int) read(sockfd, buffer, 63);
                     if (n < 0) {
                         perror("Error reading from socket");
@@ -91,7 +108,7 @@ int debataSoser(char * buffer, int sockfd) {
             bzero(buffer,64);
 
         } while (koniec == 1);
-        usleep(500);
+        //usleep(200);
     } while (koniec > 1);
     return 0;
 }
