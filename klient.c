@@ -20,8 +20,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <time.h>
 
-int prepojenieZoserv(char * buffer, int sockfd) {
+int debataSoser(char * buffer, int sockfd) {
     int n, koniec, cis;
     char * ukaz;
 
@@ -139,30 +140,48 @@ int main(int argc, char *argv[])
         return 4;
     }
 
-        // -------------------- komunikacia so serverom-------------------------------------------
-   // prepojenieZoserv(buffer, sockfd);
-    n = (int) read(sockfd, buffer, 63);
-    if (n < 0) {
-        perror("Error reading from socket");
-        return 6;
+    // -------------------- komunikacia so serverom-------------------------------------------
+    int exit = 1;
+
+        // debataSoser(buffer, sockfd);
+        n = (int) read(sockfd, buffer, 63);
+        if (n < 0) {
+            perror("Error reading from socket");
+            return 6;
+        }
+        printf("klient prial: %s \n", buffer);
+    /* while (exit) {
+        srand(time(NULL));
+        int nahod;
+        nahod= (rand()%3 +2);
+
+
+        scanf("%s", buffer);
+        if((strcmp(buffer, "exit")) ==0 ) {
+            exit = 0;
+            break;
+        }
+        //strcpy(buffer, buffer +'\0');
+        printf("caka %d s\n", nahod);
+
+        //strcpy(buffer, "Ahoj ide to.\n");
+        n = (int) send(sockfd, buffer, strlen(buffer), 0);
+        if (n < 0) {
+            perror("Error writing to socket");
+            return 5;
+        }
+        sleep(nahod);
+       // usleep(800);
+
     }
-    printf("klient prial: %s \n", buffer);
-
-    srand(time(NULL));
-    int nahod;
-     nahod= (rand()%5 +2);
-
-
-    scanf("%s", buffer);
-    printf("caka %d s\n", nahod);
-    sleep(nahod);
-    //strcpy(buffer, "Ahoj ide to.\n");
-    n = (int) write(sockfd, buffer, strlen(buffer));
+    strcpy(buffer, "Pripojeny k servru\n");
+    n = (int) send(sockfd, buffer, strlen(buffer), 0);
     if (n < 0) {
         perror("Error writing to socket");
         return 5;
-    }
-
+    }printf(" %s ", buffer);
+    bzero(buffer,64);*/
+    debataSoser(buffer,sockfd);
 
     sleep(4);
     printf("Koniec spojenia. %s\n",buffer);
