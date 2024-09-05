@@ -1,4 +1,4 @@
-# ServerKlientAlgebraPolynomov
+# Server klient Algebra polynomov so zlomkami
 
 Projekt písaný v Clion v2019
 
