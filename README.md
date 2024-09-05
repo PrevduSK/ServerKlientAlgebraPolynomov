@@ -19,3 +19,6 @@ Program je rozdelný na Klinta a Server
     - b.2. počítanie:
                   - vykonáva aritmetickú operáciu s polynómami i-teho klienta, a ukladá výsledko operácie.
       - tieto úkony sa vykonávaju v samostatných vláknach jedno pre každú funkciu, prístup k dátam je kontrolovaný cez mutexi.
+
+  - Main:
+    - výkonávanie na jednom zariadení bez serveru.   
