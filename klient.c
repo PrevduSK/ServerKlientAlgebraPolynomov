@@ -26,7 +26,7 @@ int debataSoser(char * buffer, int sockfd) {
     int n, koniec, cis;
     char * ukaz, *ukzK1;
 
-    printf("Please enter a message: ");
+    //printf("Please enter a message: ");
     int i;
     printf("-- Zadajte polynom so zlomkom (v tvare: npr.: 3/4x^2+1/2x...) a stlacte enter\n-- poznamka: Vsetky cisla su zapisuju v tvare zlomku aj cele cisle npr.: 4 zapiste ako 4/1\n");
     do {
@@ -64,7 +64,7 @@ int debataSoser(char * buffer, int sockfd) {
                     printf("%d. %s \n", i + 1, buffer);
                     ++i;
                 }
-            } else { printf("nebolo nacitaen nic"); }
+            } else { printf("nebolo nacitane nic"); }
 
             bzero(buffer, 64);
            strcpy(buffer,"ready");

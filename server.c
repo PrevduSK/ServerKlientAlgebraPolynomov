@@ -56,7 +56,7 @@ int vytvor_servra(void * data, bool vytvor) {
         argv = *sd->argvD;
         pthread_mutex_unlock(sd->mutex);
 
-        // inicailizácia adresy na korej sa bud primat spojenia
+        // inicailizácia adresy na korej sa budu primat spojenia
         struct sockaddr_in serv_addr; // , cli_addr
 
         if (argc < 2) {
@@ -146,7 +146,7 @@ void * komunikacia(void * data) {
         if(aktivita < 0 && errno!=EINTR) {
             perror("select error");
         }
-        // zmeni na servery, prima nove spojenia
+        // zmeny na servery, prijima nove spojenia
         if(FD_ISSET(sockfd, &citaFds)) {
             // priatie spojenia od klienta. spojenie s klientom, socket klienta
             if((newsockfd = accept(sockfd, (struct sockaddr *) &cli_addr, &cli_len)) < 0) {
@@ -156,7 +156,7 @@ void * komunikacia(void * data) {
             printf("Nove spojenie, socket %d , port %d .\t", newsockfd, ntohs(cli_addr.sin_port));
 
             strcpy(zberP,"Spojenie so servrom\n");
-            // moze poslat spravu kietovy o nadviazani spojenia
+            // moze poslat spravu klietovy o chybnom nadviazani spojenia
             if( (write(newsockfd, zberP, sizeof(zberP)) ) !=  sizeof(zberP)){
                 perror("Posielanie 1. spojenie");
             }
@@ -165,7 +165,7 @@ void * komunikacia(void * data) {
             for (int i = 0; i < max_klientov; ++i) {
                 if( sock_klient[i] == 0) {
                     sock_klient[i] = newsockfd;
-                    printf("Pridene do zoznamu socketov klientov: %d\n", i);
+                    printf("Pridane do zoznamu socketov klientov: %d\n", i);
                     break;
                 }
             }
@@ -176,7 +176,7 @@ void * komunikacia(void * data) {
 
            // bool zapis= false;
             sd = sock_klient[i];
-            // zmeni u klintov
+            // zmeny u klintov
             if(sd > 0) {
                 if (FD_ISSET(sd, &citaFds)) {
                     bzero(zberP, 64);
@@ -196,14 +196,14 @@ void * komunikacia(void * data) {
                         pthread_mutex_lock(kd->mutex);
                         kd->vykonanie[i] = 0;
                         pthread_mutex_unlock(kd->mutex);
-                        // chyba pri priati
+                        // chyba pri prijme
                     } else if (valcit < 0) {
                         perror("Sprava od kienta");
                         // zberP[valcit] = '\0';
                         // write(sd, zberP, sizeof(zberP));
                     }
 
-                    // priatie spravi
+                    // prijatie spravy
                     if (valcit > 0) {
                         // printf("\t server prial od klintlist %d, %d : %s \n", i, sd, zberP); // velkost: %ld , sizeof(zberP)
                         pthread_mutex_lock(kd->mutex);
@@ -349,7 +349,7 @@ void * pocitanie(void * data){
         if (kd->pocitanie[i] == true && kd->vykonanie[i] > 3) {
             koniec = 1;
             switch (kd->progKod[i]) {
-                //. scitaj polynomy
+                //. scitaj polynomi
                 case 1:
                     printf("Scitanie polynomov:\n");
                     pthread_mutex_lock(kd->mutex);
@@ -357,7 +357,7 @@ void * pocitanie(void * data){
                     kd->progKod[i] = 0;
                     pthread_mutex_unlock(kd->mutex);
                     break;
-                    // odcitaj polynomy
+                    // odcitaj polynomi
                 case 2:
                     printf("Odcitanie polynomov:\n");
                     pthread_mutex_lock(kd->mutex);
@@ -365,7 +365,7 @@ void * pocitanie(void * data){
                     kd->progKod[i] = 0;
                     pthread_mutex_unlock(kd->mutex);
                     break;
-                    // nasob polynomy
+                    // nasob polynomi
                 case 3:
                     printf("Nasobenie polynomov:\n");
                     pthread_mutex_lock(kd->mutex);
@@ -373,7 +373,7 @@ void * pocitanie(void * data){
                     kd->progKod[i] = 0;
                     pthread_mutex_unlock(kd->mutex);
                     break;
-                    // del polynomy
+                    // del polynomi
                 case 4:
                     printf("Delenie polynomov:\n");
                     pthread_mutex_lock(kd->mutex);
@@ -398,7 +398,7 @@ void * pocitanie(void * data){
                     pthread_mutex_unlock(kd->mutex);
                     printf("\n__________________koniec___________________\n");
                     break;
-                    // zadanie znova hodnot
+                    // zadanie novych hodnot
                 case 7:
                     pthread_mutex_lock(kd->mutex);
                     koniec = 2;
@@ -422,7 +422,7 @@ void * pocitanie(void * data){
                     pthread_mutex_unlock(kd->mutex);
                     ++m;
                 }
-                printf("hodnoty klient s indexom %d boly odstranen \n", i);
+                printf("hodnoty klienta s indexom %d boly odstranen \n", i);
             }
             // printf("cislo vykonavania %d \n", kd->vykonanie[i]);
             pthread_mutex_lock(kd->mutex);
