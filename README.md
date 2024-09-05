@@ -1,4 +1,4 @@
-# pos-SemServerAlgPol
+# ServerKlientAlgebraPolynomov
 
 
 
