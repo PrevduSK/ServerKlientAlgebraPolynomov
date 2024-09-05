@@ -5,8 +5,9 @@ Projekt písaný v Clion v2019
 cez Cygwin64 3.5.1
 
 Program je rozdelný na Klinta a Server
-  - Klient: 1. pripojenie sa na server
-            2. komunikácia:
+  - Klient:
+    - 1. pripojenie sa na server
+    - 2. komunikácia:
                 -posiela reťazce znakov (polynóm so zomkami) a operáciu ktorá má byť aplikovaná a prijíma výsledok v tvare polynómu.
       -Pužitie: Používaťel zadá dva polynómi a zvolí aritmetickú operáciu (sčítanie, odčítanie, násobenie, delenie, zvišok po delený polynómov) alebo zadanie nových polynómov a ukončeinie.     
   
